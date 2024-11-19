@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/ServiceScout-FrontEnd-main.iml" filepath="$PROJECT_DIR$/.idea/ServiceScout-FrontEnd-main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/ServiceScout-FrontEnd.iml" filepath="$PROJECT_DIR$/.idea/ServiceScout-FrontEnd.iml" />
     </modules>
   </component>
 </project>

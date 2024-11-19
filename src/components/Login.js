@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { TextField, Button, Typography, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import UserService from '../services/UserService';
 
 const Login = () => {
     const [credentials, setCredentials] = useState({ username: '', password: '' });
@@ -11,14 +12,26 @@ const Login = () => {
         setCredentials((prev) => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Mock API call for login
-        if (credentials.username && credentials.password) {
-            alert('Logged in successfully!');
-            navigate('/'); // Redirect to homepage
-        } else {
-            alert('Invalid credentials!');
+        try {
+            const response = await UserService.login({
+                userName: credentials.username,
+                password: credentials.password
+            });
+            if (response.status === 200) {
+                const user = response.data;
+
+                // Store user ID in localStorage
+                localStorage.setItem('userId', user.userId);
+                localStorage.setItem('userRole', user.role); // Optional: Store role if needed
+
+                alert(`Logged in successfully as ${user.role}!`);
+                navigate('/');  // Redirect to homepage after successful login
+            }
+        } catch (error) {
+            console.error('Error logging in:', error.response ? error.response.data : error.message);
+            alert('Invalid credentials, please try again.');
         }
     };
 

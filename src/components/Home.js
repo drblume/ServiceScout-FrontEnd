@@ -1,48 +1,55 @@
-import React from 'react';
-import { AppBar, Toolbar, Typography, Button, Grid, Card, CardContent, CardMedia, Box } from '@mui/material';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Typography, Grid, Card, CardContent, CardMedia, Box, Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import UserService from '../services/UserService';
 
 const Home = () => {
-    const popularContractors = [
-        { id: 1, name: 'John Doe - Electrician', image: 'https://via.placeholder.com/150', description: 'Top-rated electrician in your area.' },
-        { id: 2, name: 'Jane Smith - Painter', image: 'https://via.placeholder.com/150', description: 'Expert in interior and exterior painting.' },
-    ];
+    const [contractors, setContractors] = useState([]);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        // Fetch contractors from the backend
+        UserService.getAllUsers()
+            .then((response) => {
+                const contractorList = response.data.filter(user => user.role === 'CONTRACTOR');
+                setContractors(contractorList);
+            })
+            .catch((error) => {
+                console.error('Error fetching contractors:', error);
+            });
+    }, []);
 
     return (
         <Box sx={{ minHeight: '100vh', backgroundColor: '#f5f5f5', paddingBottom: 4 }}>
-            {/* Navigation Bar */}
-            <AppBar position="static">
-                <Toolbar>
-                    <Typography variant="h6" sx={{ flexGrow: 1 }}>
-                        Service Scout
-                    </Typography>
-                    <Button color="inherit" component={Link} to="/login">Login</Button>
-                    <Button color="inherit" component={Link} to="/create-account">Create Account</Button>
-                </Toolbar>
-            </AppBar>
-
             {/* Hero Section */}
             <Box sx={{ padding: 4, textAlign: 'center', backgroundColor: '#1976d2', color: 'white' }}>
                 <Typography variant="h3" gutterBottom>Welcome to Service Scout</Typography>
-                <Typography variant="h6">Find trusted contractors for your home projects in minutes.</Typography>
             </Box>
 
-            {/* Popular Contractors */}
+            {/* Contractors Section */}
             <Box sx={{ padding: 4 }}>
                 <Typography variant="h4" textAlign="center" gutterBottom>Popular Contractors</Typography>
                 <Grid container spacing={4}>
-                    {popularContractors.map((contractor) => (
-                        <Grid item xs={12} sm={6} md={4} key={contractor.id}>
+                    {contractors.map((contractor) => (
+                        <Grid item xs={12} sm={6} md={4} key={contractor.userId}>
                             <Card>
                                 <CardMedia
                                     component="img"
                                     height="140"
-                                    image={contractor.image}
+                                    image="https://via.placeholder.com/150" // Placeholder image
                                     alt={contractor.name}
                                 />
                                 <CardContent>
                                     <Typography variant="h6">{contractor.name}</Typography>
-                                    <Typography variant="body2">{contractor.description}</Typography>
+                                    <Typography variant="body2">Services: {contractor.specialties?.join(', ') || 'Various'}</Typography>
+                                    <Typography variant="body2">Phone: {contractor.phoneNumber}</Typography>
+                                    <Button
+                                        variant="contained"
+                                        sx={{ marginTop: 2 }}
+                                        onClick={() => navigate(`/contractor/${contractor.userId}`)}
+                                    >
+                                        View Profile
+                                    </Button>
                                 </CardContent>
                             </Card>
                         </Grid>
