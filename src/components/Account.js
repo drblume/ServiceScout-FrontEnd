@@ -23,6 +23,21 @@ const Account = () => {
         }
     }, [navigate]);
 
+    const handleDeleteAccount = () => {
+        const userId = localStorage.getItem('userId');
+        if (userId && window.confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+            UserService.deleteUser(userId)
+                .then(() => {
+                    localStorage.removeItem('userId');
+                    localStorage.removeItem('userRole');
+                    navigate('/create-account');
+                })
+                .catch((error) => {
+                    console.error('Error deleting account:', error);
+                });
+        }
+    };
+
     return (
         <Container className="mt-5">
             <Card className="p-4">
@@ -43,6 +58,13 @@ const Account = () => {
                                 onClick={() => navigate('/edit-account')}
                             >
                                 Edit Account
+                            </Button>
+                            <Button
+                                color="error"
+                                variant="contained"
+                                onClick={handleDeleteAccount}
+                            >
+                                Delete Account
                             </Button>
                             <Button
                                 color="secondary"

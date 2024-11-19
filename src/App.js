@@ -8,6 +8,7 @@ import Account from './components/Account';
 import EditAccount from './components/EditAccount';
 import ContractorProfile from './components/ContractorProfile';
 import Banner from './components/Banner';
+import WriteReview from './components/WriteReview';
 
 
 const App = () => {
@@ -22,6 +23,7 @@ const App = () => {
                 <Route path="/account" element={<Account />} />
                 <Route path="/edit-account" element={<EditAccount />} />
                 <Route path="/contractor/:contractorId" element={<ContractorProfile />} />
+                <Route path="/contractor/:contractorId/write-review" element={<WriteReview />} />
             </Routes>
         </Router>
     );

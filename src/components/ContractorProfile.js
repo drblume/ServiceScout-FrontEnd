@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Typography, Button, Box, Card, CardContent, Avatar, Divider } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 import UserService from '../services/UserService';
+import ReviewService from '../services/ReviewService';
 
 const ContractorProfile = () => {
     const { contractorId } = useParams();
     const [contractor, setContractor] = useState(null);
+    const [reviews, setReviews] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -16,6 +18,15 @@ const ContractorProfile = () => {
             })
             .catch((error) => {
                 console.error('Error fetching contractor details:', error);
+            });
+
+        // Fetch reviews associated with the contractor
+        ReviewService.getReviewsByContractorId(contractorId)
+            .then((response) => {
+                setReviews(response.data);
+            })
+            .catch((error) => {
+                console.error('Error fetching reviews:', error);
             });
     }, [contractorId]);
 
@@ -49,9 +60,33 @@ const ContractorProfile = () => {
                         <Typography variant="body1"><strong>Phone Number:</strong> {contractor.phoneNumber}</Typography>
                         <Typography variant="body1"><strong>Business Address:</strong> {contractor.address}</Typography>
                     </Box>
-
-                    {/* Add more detailed sections if needed */}
                 </CardContent>
+
+                {/* Reviews Section */}
+                <Box sx={{ marginTop: 4 }}>
+                    <Typography variant="h5">Reviews</Typography>
+                    {reviews.length > 0 ? (
+                        reviews.map((review) => (
+                            <Card key={review.reviewId} sx={{ marginBottom: 2, padding: 2 }}>
+                                <Typography variant="body2"><strong>Reviewer:</strong> {review.reviewer?.userName || 'Anonymous'}</Typography>
+                                <Typography variant="body2"><strong>Rating:</strong> {review.rating}/5</Typography>
+                                <Typography variant="body2">{review.textBody}</Typography>
+                            </Card>
+                        ))
+                    ) : (
+                        <Typography variant="body2" sx={{ marginTop: 2 }}>No reviews available for this contractor.</Typography>
+                    )}
+                </Box>
+
+                {/* Submit Review Button */}
+                <Button
+                    variant="contained"
+                    color="secondary"
+                    sx={{ marginTop: 2 }}
+                    onClick={() => navigate(`/contractor/${contractorId}/write-review`)}
+                >
+                    Write a Review
+                </Button>
 
                 {/* Back Button */}
                 <Button

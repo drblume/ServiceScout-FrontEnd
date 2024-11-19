@@ -34,7 +34,7 @@ const Banner = () => {
             top: 0,
             zIndex: 1000,  // Keeps the banner above other elements
         }}>
-            <Typography variant="h1" sx={{ fontWeight: 'bold'}}>
+            <Typography variant="h3" sx={{ fontWeight: 'bold'}}>
                 Service Scout
             </Typography>
             <Typography variant="h6">Find trusted contractors for your home projects in minutes.</Typography>
