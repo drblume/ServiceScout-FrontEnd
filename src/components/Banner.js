@@ -17,6 +17,8 @@ const Banner = () => {
         const userRole = localStorage.getItem('userRole');
         if (userRole === 'CONTRACTOR') {
             navigate('/dashboard');
+        } else if (userRole === 'ADMIN') {
+            navigate('/admin');
         } else {
             navigate('/account');
         }

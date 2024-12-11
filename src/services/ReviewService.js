@@ -42,6 +42,14 @@ class ReviewService {
   deleteReview(id) {
     return axios.delete(`${REVIEW_API_BASE_URL}/${id}`);
   }
+
+  flagReview(reviewId) {
+      return axios.put(`${REVIEW_API_BASE_URL}/${reviewId}/flag`);
+  }
+
+  unflagReview(reviewId) {
+      return axios.put(`${REVIEW_API_BASE_URL}/${reviewId}/flag`);
+    }
 }
 
 export default new ReviewService();

@@ -34,6 +34,7 @@ class UserService {
    login(credentials) {
            return axios.post(`${USER_API_BASE_URL}/login`, credentials);
        }
+
 }
 
 export default new UserService();

@@ -8,10 +8,11 @@ const ContractorProfile = () => {
     const { contractorId } = useParams();
     const [contractor, setContractor] = useState(null);
     const [reviews, setReviews] = useState([]);
+    const [flaggedReviews, setFlaggedReviews] = useState({});
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Fetch the contractor details using the ID from the URL
+        // Fetch the contractor details
         UserService.getUserById(contractorId)
             .then((response) => {
                 setContractor(response.data);
@@ -24,11 +25,34 @@ const ContractorProfile = () => {
         ReviewService.getReviewsByContractorId(contractorId)
             .then((response) => {
                 setReviews(response.data);
+                const initialFlaggedStatus = response.data.reduce((acc, review) => {
+                    acc[review.reviewId] = review.flagged;
+                    return acc;
+                }, {});
+                setFlaggedReviews(initialFlaggedStatus);
             })
             .catch((error) => {
                 console.error('Error fetching reviews:', error);
             });
     }, [contractorId]);
+
+    const handleFlagReview = (reviewId) => {
+        const isFlagged = flaggedReviews[reviewId];
+        const action = isFlagged ? ReviewService.unflagReview : ReviewService.flagReview;
+
+        action(reviewId)
+            .then(() => {
+                setFlaggedReviews((prev) => ({
+                    ...prev,
+                    [reviewId]: !isFlagged,
+                }));
+                alert(`Review ${isFlagged ? 'unflagged' : 'flagged'} successfully!`);
+            })
+            .catch((error) => {
+                console.error(`Error ${isFlagged ? 'unflagging' : 'flagging'} review:`, error);
+                alert(`Failed to ${isFlagged ? 'unflag' : 'flag'} review. Please try again.`);
+            });
+    };
 
     if (!contractor) {
         return (
@@ -45,7 +69,7 @@ const ContractorProfile = () => {
                 <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column', marginBottom: 4 }}>
                     <Avatar
                         alt={contractor.name}
-                        src="https://via.placeholder.com/150" // Placeholder image for contractor
+                        src="https://via.placeholder.com/150" // Static placeholder image
                         sx={{ width: 150, height: 150 }}
                     />
                     <Typography variant="h4" sx={{ marginTop: 2 }}>{contractor.name}</Typography>
@@ -71,6 +95,14 @@ const ContractorProfile = () => {
                                 <Typography variant="body2"><strong>Reviewer:</strong> {review.reviewer?.userName || 'Anonymous'}</Typography>
                                 <Typography variant="body2"><strong>Rating:</strong> {review.rating}/5</Typography>
                                 <Typography variant="body2">{review.textBody}</Typography>
+                                <Button
+                                    variant="outlined"
+                                    color={flaggedReviews[review.reviewId] ? "success" : "error"}
+                                    sx={{ marginTop: 1 }}
+                                    onClick={() => handleFlagReview(review.reviewId)}
+                                >
+                                    {flaggedReviews[review.reviewId] ? "Unflag Review" : "Flag Review"}
+                                </Button>
                             </Card>
                         ))
                     ) : (
@@ -78,14 +110,24 @@ const ContractorProfile = () => {
                     )}
                 </Box>
 
-                {/* Submit Review Button */}
+                {/* Leave a Review Button */}
+                <Button
+                    variant="contained"
+                    color="primary"
+                    sx={{ marginTop: 2 }}
+                    onClick={() => navigate(`/contractor/${contractorId}/write-review`)}
+                >
+                    Leave a Review
+                </Button>
+
+                {/* Request a Service Button */}
                 <Button
                     variant="contained"
                     color="secondary"
                     sx={{ marginTop: 2 }}
-                    onClick={() => navigate(`/contractor/${contractorId}/write-review`)}
+                    onClick={() => navigate(`/request/${contractorId}`)}
                 >
-                    Write a Review
+                    Request a Service
                 </Button>
 
                 {/* Back Button */}
