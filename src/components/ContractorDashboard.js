@@ -109,6 +109,7 @@ const ContractorDashboard = () => {
                                             sx={{ minWidth: 120 }}
                                         >
                                             <MenuItem value="PENDING">PENDING</MenuItem>
+                                            <MenuItem value="DENIED">DENIED</MenuItem>
                                             <MenuItem value="ACCEPTED">ACCEPTED</MenuItem>
                                             <MenuItem value="COMPLETED">COMPLETED</MenuItem>
                                         </Select>
