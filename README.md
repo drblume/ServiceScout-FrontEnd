@@ -68,3 +68,9 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+### Default user/contractor profile
+
+There is a default user and contractor profile that was created to quickly access capabilities. The user login is username: user and password: password. The contractor login is username: john and password: password.
+
+## Do not forget to have backend implementation running at the same time!
